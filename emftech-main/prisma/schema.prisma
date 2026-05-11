@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // Or "mysql" if using XAMPP/Namecheap default
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("SUPER_ADMIN") // SUPER_ADMIN, CONTENT_ADMIN
+  createdAt DateTime @default(now())
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  icon        String   // Lucide icon name
+  shortDesc   String
+  description String   @db.Text
+  features    Json     // Array of features
+  color       String   // Gradient color string
+  order       Int      @default(0)
+  status      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model Portfolio {
+  id             String   @id @default(uuid())
+  title          String
+  clientIndustry String
+  description    String   @db.Text
+  image          String   // Primary image URL
+  category       String
+  tags           String[]
+  link           String?
+  createdAt      DateTime @default(now())
+}
+
+model ContactLead {
+  id        String   @id @default(uuid())
+  name      String
+  company   String
+  email     String
+  phone     String
+  service   String
+  message   String   @db.Text
+  status    String   @default("NEW") // NEW, READ, REPLIED
+  createdAt DateTime @default(now())
+}
+
+model Testimonial {
+  id         String   @id @default(uuid())
+  clientName String
+  company    String
+  role       String
+  quote      String   @db.Text
+  rating     Int      @default(5)
+  status     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+}
+
+model PricingPlan {
+  id           String   @id @default(uuid())
+  name         String
+  price        Float
+  billingCycle String   @default("MONTHLY") // MONTHLY, ANNUAL
+  features     Json
+  notIncluded  Json
+  highlighted  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}

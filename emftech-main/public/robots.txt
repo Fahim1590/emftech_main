@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /_next
+
+Sitemap: https://emftech.online/sitemap.xml
+Crawl-delay: 1
