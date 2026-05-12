@@ -41,9 +41,12 @@ Fast in the Middle East, free, Git-based auto-deploy.
 4. Environment variables: `NODE_VERSION = 20`, plus `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
 5. Add the custom domain `emftech.online` and point DNS.
 
-SPA routing is handled by `public/_redirects` (`/* /index.html 200`).
+For SPA routing (deep links), enable the **Single Page Application** option in the
+Pages build settings — or add a `public/_redirects` file containing
+`/* /index.html 200` (Cloudflare Pages and Netlify accept that pattern; Cloudflare
+Workers does not — see Option 2).
 
-## Option 2 — Cloudflare Workers (Wrangler CLI)
+## Option 2 — Cloudflare Workers (Wrangler CLI / Workers Builds)
 
 Uses `wrangler.jsonc` in this repo (static assets, no Worker script).
 
@@ -52,9 +55,15 @@ npm install           # includes wrangler
 npm run deploy         # = vite build && wrangler deploy
 ```
 
+Or connect the repo to Cloudflare Workers Builds with build command `npm run build`.
+
 `wrangler.jsonc` points at `./dist` and sets `not_found_handling: "single-page-application"`,
 so client-side routes fall back to `index.html`. Set the `VITE_SUPABASE_*` vars in
-your shell (or `wrangler` env config) before deploying so they're baked into the build.
+your shell (or the Cloudflare dashboard) before building so they're baked in.
+
+> Do **not** add `public/_redirects` for this path: Workers' static-asset validator
+> rejects a `/* /index.html 200` rule as an infinite loop (`/index.html` matches
+> `/*`). `not_found_handling` already does the SPA fallback.
 
 ## Option 3 — Namecheap shared hosting (cPanel)
 

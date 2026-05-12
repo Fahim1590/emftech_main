@@ -41,28 +41,27 @@ folder (`index.html` + `assets/`). Never upload the source `index.html` /
 returns with the wrong MIME type, so the browser refuses it and the page is
 blank. Full guide and other hosts: [NAMECHEAP_DEPLOY.md](./NAMECHEAP_DEPLOY.md).
 
-**Recommended: Cloudflare Pages** (fast in the Middle East, free, Git-based auto-deploy).
+**Recommended: Cloudflare Workers** (fast in the Middle East, free) — `wrangler.jsonc`
+is committed: it serves `dist/` as static assets with `not_found_handling:
+"single-page-application"` for client-side routing.
 
-1. Push this repo to GitHub
-2. In Cloudflare → Workers & Pages → "Create" → "Pages" → "Connect to Git"
-3. Settings:
-   - Framework preset: **Vite**
-   - Build command: `npm run build`
-   - Output directory: `dist`
-   - Env vars: `NODE_VERSION = 20`, plus `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY`
-4. Add custom domain `emftech.online` and point DNS
+- **From your machine:** set `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` in your
+  shell, then `npm run deploy` (= `vite build && wrangler deploy`).
+- **Git-triggered (Workers Builds):** Cloudflare → Workers & Pages → connect this
+  repo → build command `npm run build` → add the `VITE_SUPABASE_*` env vars.
+- Add the custom domain `emftech.online` and point DNS.
 
-**Alternative: Cloudflare Workers via Wrangler** — `wrangler.jsonc` is committed
-(static assets from `dist/`, SPA fallback to `index.html`). Set the
-`VITE_SUPABASE_*` vars in your shell, then:
+> Don't add a `public/_redirects` `/* /index.html 200` rule for SPA fallback —
+> Cloudflare Workers' static-asset validator rejects it as an infinite loop
+> (`/index.html` matches `/*`). `not_found_handling` already covers it.
 
-```bash
-npm run deploy   # = vite build && wrangler deploy
-```
+**Cloudflare Pages** also works (it doesn't read `wrangler.jsonc` — use the Pages
+build settings: framework **Vite**, output `dist`; enable the project's
+"Single Page Application" routing option for client-side routes).
 
-SPA routing is handled by `public/_redirects` (Cloudflare Pages / Netlify),
-`wrangler.jsonc`'s `not_found_handling` (Cloudflare Workers), and
-`public/.htaccess` (Apache / cPanel).
+SPA routing per host: `wrangler.jsonc`'s `not_found_handling` (Cloudflare Workers),
+the Pages "Single Page Application" setting (Cloudflare Pages), `public/.htaccess`
+(Apache / cPanel).
 
 ## Project structure
 

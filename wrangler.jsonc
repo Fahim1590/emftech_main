@@ -5,13 +5,10 @@
   //   npm run deploy     -> build + wrangler deploy
   //
   // Serves ./dist as static files with no Worker script.
-  // - not_found_handling: "single-page-application" → client routes fall
-  //   back to index.html (the SPA fallback on Workers).
-  // - html_handling: "none" → don't auto-redirect /foo.html → /foo. The
-  //   build only has index.html, so this changes nothing for routing, but
-  //   it stops Wrangler rejecting public/_redirects' `/* /index.html 200`
-  //   as an "infinite loop" (that file is kept for the Cloudflare Pages /
-  //   Netlify deploy paths; on Workers, not_found_handling covers it).
+  // not_found_handling: "single-page-application" makes client-side routes
+  // fall back to index.html — that is the SPA fallback on Workers. (Don't
+  // add a public/_redirects `/* /index.html 200` rule: Workers' static-asset
+  // validator rejects it as an infinite loop, since /index.html matches /*.)
   //
   // Add VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY as build-time env vars
   // (your shell, or the Cloudflare dashboard) before running the build.
@@ -20,7 +17,6 @@
   "compatibility_date": "2026-05-12",
   "assets": {
     "directory": "./dist",
-    "html_handling": "none",
     "not_found_handling": "single-page-application"
   }
 }
