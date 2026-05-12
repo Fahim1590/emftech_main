@@ -1,28 +1,26 @@
 {
-  // Cloudflare Workers static-asset deploy for the built Vite SPA.
+  // Cloudflare Workers static-assets deploy for the built SPA.
   //
-  //   npm run build    -> produces ./dist
-  //   npm run deploy   -> build + wrangler deploy
+  //   npm run build      -> produces ./dist
+  //   npm run deploy     -> build + wrangler deploy
   //
-  // If you deploy via Cloudflare's Git integration (Workers Builds),
-  // set the build command to `npm run build` and keep this file as-is.
-  // `not_found_handling` makes client-side routes fall back to index.html
-  // — that is why there is no public/_redirects (a `/* /index.html 200`
-  // rule loops against Workers' built-in .html handling and fails to deploy).
+  // Serves ./dist as static files with no Worker script.
+  // - not_found_handling: "single-page-application" → client routes fall
+  //   back to index.html (the SPA fallback on Workers).
+  // - html_handling: "none" → don't auto-redirect /foo.html → /foo. The
+  //   build only has index.html, so this changes nothing for routing, but
+  //   it stops Wrangler rejecting public/_redirects' `/* /index.html 200`
+  //   as an "infinite loop" (that file is kept for the Cloudflare Pages /
+  //   Netlify deploy paths; on Workers, not_found_handling covers it).
   //
-  // Provide VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY as build-time
-  // env vars (shell or the Cloudflare dashboard) before building.
+  // Add VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY as build-time env vars
+  // (your shell, or the Cloudflare dashboard) before running the build.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "emftechno",
-  "compatibility_date": "2026-05-11",
-  "observability": {
-    "enabled": true
-  },
+  "compatibility_date": "2026-05-12",
   "assets": {
     "directory": "./dist",
+    "html_handling": "none",
     "not_found_handling": "single-page-application"
-  },
-  "compatibility_flags": [
-    "nodejs_compat"
-  ]
+  }
 }
