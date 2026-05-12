@@ -1,6 +1,26 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
 # wrangler files
 .wrangler
 .dev.vars*
 !.dev.vars.example
+
+# Local env files
 .env*
 !.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/

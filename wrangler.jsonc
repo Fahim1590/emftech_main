@@ -1,4 +1,16 @@
 {
+  // Cloudflare Workers static-asset deploy for the built Vite SPA.
+  //
+  //   npm run build    -> produces ./dist
+  //   npm run deploy   -> build + wrangler deploy
+  //
+  // If you deploy via Cloudflare's Git integration (Workers Builds),
+  // set the build command to `npm run build` and keep this file as-is.
+  // `not_found_handling` makes client-side routes fall back to index.html,
+  // which replaces public/_redirects on Cloudflare.
+  //
+  // Provide VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY as build-time
+  // env vars (shell or the Cloudflare dashboard) before building.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "emftechno",
   "compatibility_date": "2026-05-11",
@@ -6,7 +18,8 @@
     "enabled": true
   },
   "assets": {
-    "directory": "emftech-main"
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
   },
   "compatibility_flags": [
     "nodejs_compat"
