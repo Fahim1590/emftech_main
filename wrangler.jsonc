@@ -6,8 +6,9 @@
   //
   // If you deploy via Cloudflare's Git integration (Workers Builds),
   // set the build command to `npm run build` and keep this file as-is.
-  // `not_found_handling` makes client-side routes fall back to index.html,
-  // which replaces public/_redirects on Cloudflare.
+  // `not_found_handling` makes client-side routes fall back to index.html
+  // — that is why there is no public/_redirects (a `/* /index.html 200`
+  // rule loops against Workers' built-in .html handling and fails to deploy).
   //
   // Provide VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY as build-time
   // env vars (shell or the Cloudflare dashboard) before building.
